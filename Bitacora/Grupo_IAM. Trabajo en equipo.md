@@ -1,0 +1,1 @@
+Se creó el Grupo IAM (Project_Delivery_System_Sierra_Rojas) con permisos de Mínimo Privilegio para los servicios clave (SQS, DynamoDB, Lambda, SES) y se asignó el usuario IAM del compañero Sebastián Sierra Rivera (pendiente).

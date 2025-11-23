@@ -10,7 +10,7 @@
 				"sqs:DeleteMessage",
 				"sqs:GetQueueAttributes"
 			],
-			"Resource": "arn:aws:sqs:*:*:EmailQueue"
+			"Resource": "arn:aws:sqs:*:*:Email_Queue"
 		},
 		{
 			"Effect": "Allow",

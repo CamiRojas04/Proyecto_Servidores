@@ -1,0 +1,31 @@
+# Política de acceso para la cola SMS_Queue
+
+{
+  "Version": "2012-10-17",
+  "Id": "__default_policy_ID",
+  "Statement": [
+    {
+      "Sid": "__owner_statement",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::265005499975:root"
+      },
+      "Action": "SQS:*",
+      "Resource": "arn:aws:sqs:us-east-2:265005499975:SMS_Queue"
+    },
+    {
+      "Sid": "AWSEvents_RoutingRule-SMS_Idff569796-d952-4fae-b00a-9e5ce6924044",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "events.amazonaws.com"
+      },
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:sqs:us-east-2:265005499975:SMS_Queue",
+      "Condition": {
+        "ArnEquals": {
+          "aws:SourceArn": "arn:aws:events:us-east-2:265005499975:rule/RoutingRule-SMS"
+        }
+      }
+    }
+  ]
+}

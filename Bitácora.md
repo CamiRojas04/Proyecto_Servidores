@@ -1,9 +1,13 @@
 #  Bitácora Técnica: Sistema de Notificaciones Multi-Canal (Event-Driven Architecture)
 
 Autores: `María Camila Rojas Herrera / Sebastián Sierra Rivera`
+
 Fecha de Inicio: `Noviembre 2025`
+
 Región Principal (Lógica): `us-east-2 (Ohio)`
+
 Región Secundaria (Facturación): `us-east-1 (N. Virginia)`
+
 
 ## 1. Fase de Gobierno y Control de Costos (Capa 0)
 

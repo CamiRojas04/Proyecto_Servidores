@@ -1,29 +1,35 @@
-# Capa 2: Enrutamiento y Buffer (EventBridge + SQS)
+# Capa 2: Enrutamiento y Buffer
 
-Esta capa es responsable de la **inteligencia de distribución** y la **resiliencia** del sistema. Garantiza que cada mensaje llegue al procesador correcto y que no se pierdan datos ante picos de tráfico.
+Esta capa es el núcleo de la arquitectura "Event-Driven". Desacopla la ingestión (Capa 1) del procesamiento (Capa 3), garantizando que el sistema pueda escalar y manejar fallos sin perder datos.
 
-## Componentes
+## Arquitectura de Enrutamiento
 
-### 1. Amazon EventBridge (El Router)
-Actúa como el bus de eventos central. Utiliza reglas basadas en el contenido del mensaje (`type`) para dirigir el tráfico.
-* **Bus:** `default`
-* **Reglas:** 3 reglas activas (Email, SMS, Push).
-* **Transformación:** Se aplica un *Input Transformer* para limpiar el JSON antes de la entrega, eliminando los metadatos de AWS ("envelope") y entregando solo el payload útil.
+### 1. Amazon EventBridge (Router)
+Utilizamos un modelo de **Filtrado de Contenido**. EventBridge inspecciona el campo `detail.type` de cada evento entrante y lo dirige al canal apropiado.
+* **Transformación:** Se aplica un *Input Transformer* en cada regla para sanitizar el JSON, eliminando la envoltura del evento de AWS y entregando solo la carga útil limpia a la cola.
 
-### 2. Amazon SQS (El Buffer)
-Cada canal tiene su propia cola dedicada, lo que permite que los consumidores escalen de forma independiente (Pattern: *Queue-Based Load Leveling*).
+### 2. Amazon SQS (Buffer)
+Se implementó el patrón **Queue-Based Load Leveling**. Cada canal tiene su propia cola, lo que permite que los consumidores procesen los mensajes a su propio ritmo.
 
-| Canal | Cola Principal | Configuración de Seguridad |
+| Canal | Cola | Configuración de Seguridad |
 | :--- | :--- | :--- |
-| **EMAIL** | `Email_Queue` | Encriptación SSE-SQS + Política de Acceso Estricta |
-| **SMS** | `SMSQueue` | Encriptación SSE-SQS + Política de Acceso Estricta |
-| **PUSH** | `PushQueue` | Encriptación SSE-SQS + Política de Acceso Estricta |
+| **EMAIL** | `Email_Queue` | SSE-SQS (Encriptado) |
+| **SMS** | `SMSQueue` | SSE-SQS (Encriptado) |
+| **PUSH** | `PushQueue` | SSE-SQS (Encriptado) |
 
-### 3. Dead Letter Queue (DLQ)
-* **Cola:** `NotificacionesDLQ`
-* **Función:** Captura mensajes que no pudieron ser procesados tras 3 intentos fallidos o errores de enrutamiento en EventBridge.
-* **Uso en Desarrollo:** Fue fundamental para diagnosticar errores de formato JSON (`INVALID_JSON`) durante la integración.
+### 3. Resiliencia y Manejo de Errores (DLQ)
+Se implementó una **Dead Letter Queue (DLQ)** centralizada llamada `NotificacionesDLQ`.
+* **Política de Redrive:** Si un consumidor (Lambda) falla 3 veces al procesar un mensaje, SQS mueve el mensaje automáticamente a la DLQ.
+* **Caso de Uso:** Durante el desarrollo, la DLQ fue crucial para detectar errores de formato JSON en la integración EventBridge-SQS.
 
-## Estrategia de Seguridad
-1. **Encriptación en Reposo:** Se migró de KMS a **SSE-SQS** para facilitar la integración transparente con EventBridge sin comprometer la seguridad de los datos.
-2. **Principio de Mínimo Privilegio:** Las políticas de acceso de SQS (`AccessPolicy`) solo permiten la escritura (`sqs:SendMessage`) al servicio `events.amazonaws.com` y únicamente si la petición proviene de la regla ARN específica de este proyecto.
+## Evidencias de Configuración
+
+### Reglas de Enrutamiento Activas
+![Reglas EventBridge](../../docs/layer-2/eventbridge-rules-overview.png)
+
+### Colas y Configuración DLQ
+![Colas SQS](../../docs/layer-2/sqs-queues-overview.png)
+![Política Redrive](../../docs/layer-2/sqs-redrive-policy.png)
+
+### Detalle de Transformación (JSON)
+![Transformador](../../docs/layer-2/eventbridge-transformer-detail.png)

@@ -1,0 +1,36 @@
+# : No incluimos permisos de SNS (sns:Publish) por ahora porque estamos en modo simulado.
+# Permisos de la política
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "PermisoSQS",
+            "Effect": "Allow",
+            "Action": [
+                "sqs:ReceiveMessage",
+                "sqs:DeleteMessage",
+                "sqs:GetQueueAttributes"
+            ],
+            "Resource": "arn:aws:sqs:us-east-2:*:SMS_Queue"
+        },
+        {
+            "Sid": "PermisoDynamoDB",
+            "Effect": "Allow",
+            "Action": [
+                "dynamodb:PutItem"
+            ],
+            "Resource": "arn:aws:dynamodb:us-east-2:*:table/Project_Notifications_System_Audit"
+        },
+        {
+            "Sid": "PermisoLogs",
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ],
+            "Resource": "arn:aws:logs:us-east-2:*:*"
+        }
+    ]
+}

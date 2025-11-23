@@ -15,7 +15,7 @@ SENDER_EMAIL = os.environ['SENDER_EMAIL']
 table = dynamodb.Table(TABLE_NAME)
 
 def lambda_handler(event, context):
-    print(f"Procesando lote de {len(event['Records'])} mensajes.")
+    print(f"Procesando lote de {len(event['Records'])} mensajes.")                        
     
     batch_item_failures = []
 
@@ -50,7 +50,7 @@ def lambda_handler(event, context):
 
             # 3. Auditoría en DynamoDB (Requisito clave)
             audit_item = {
-                'NotificationId': notification_id,
+                'NotificationsID': notification_id,
                 'Timestamp': str(time.time()),
                 'Channel': 'EMAIL',
                 'Status': 'SENT',

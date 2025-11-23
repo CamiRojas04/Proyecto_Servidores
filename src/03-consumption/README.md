@@ -21,9 +21,35 @@ Se implementaron funciones AWS Lambda disparadas por eventos SQS (`SQS Trigger`)
 Se utiliza **Amazon DynamoDB** como fuente única de verdad para el estado de las notificaciones.
 * **Tabla:** `Project_Notifications_System_Audit`
 * **Estrategia:** Cada Lambda escribe un registro inmutable tras el intento de envío.
-* **Streams:** Se habilitó *DynamoDB Streams (New Image)* para permitir que futuros componentes de analítica consuman estos registros en tiempo real sin impactar el rendimiento de la escritura.
+* **Streams:** Se habilitó *DynamoDB Streams (New Image)* para permitir que futuros componentes de analítica consuman estos registros en tiempo real.
 
 ## Manejo de Errores
 Se implementó bloques `try/catch` granulares por mensaje.
-1. **Error de Datos (Validación):** Se registra en logs y se descarta (no se reintenta).
-2. **Error Transitorio (Red/Servicio):** Se marca el ID del mensaje en `batchItemFailures` para que SQS aplique su política de reintentos (Redrive Policy) y, eventualmente, lo mueva a la DLQ.
+1. **Error de Datos (Validación):** Se registra en logs y se descarta.
+2. **Error Transitorio (Red/Servicio):** Se marca el ID del mensaje en `batchItemFailures` para que SQS aplique su política de reintentos y, eventualmente, lo mueva a la DLQ.
+
+---
+
+## 📸 Evidencias Gráficas
+
+### 1. Auditoría de Envío Exitoso (Canal Email)
+Registro en DynamoDB confirmando el envío real de un correo electrónico a través de Amazon SES.
+> **Estado:** `SENT`
+>
+> ![Auditoría Email](../../docs/layer-3/dynamodb-email-audit.png)
+
+*(Nota: Corresponde a tu captura `image_b444b3.png`)*
+
+### 2. Validación de Mocking (Canal SMS)
+Evidencia de la estrategia de simulación para el canal SMS. El sistema procesó el evento pero registró el estado simulado debido a restricciones de Sandbox.
+> **Estado:** `SENT_MOCK`
+>
+> ![Auditoría SMS Mock](../../docs/layer-3/dynamodb-sms-mock.png)
+
+*(Nota: Corresponde a tu captura `image_2e789f.png`)*
+
+### 3. Trazabilidad y Logs (CloudWatch)
+Registro detallado de la ejecución de la Lambda, mostrando el procesamiento del evento y la captura de errores (durante la fase de depuración).
+> **Detalle:** Logs de ejecución y excepciones controladas.
+>
+> ![Logs CloudWatch](../../docs/layer-3/lambda-cloudwatch-logs.jpg)

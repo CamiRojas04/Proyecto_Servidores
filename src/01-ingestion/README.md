@@ -28,6 +28,8 @@ Esta capa expone la **Interfaz Pública** del Sistema de Notificaciones. Actúa 
   "msg": "Contenido del mensaje",
   "subject": "Asunto (Opcional, solo para Email)"
 }
+```
+
 
 ### Interfaz de Pruebas Web
 Al acceder a la URL raíz del API Gateway, se carga el cliente web ligero:

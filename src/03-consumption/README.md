@@ -30,23 +30,32 @@ Se implementó bloques `try/catch` granulares por mensaje.
 
 ---
 
-## 📸 Evidencias Gráficas
+## Evidencias Gráficas del Flujo de Consumo
 
-### 1. Auditoría de Envío Exitoso (Canal Email)
-Registro en DynamoDB confirmando el envío real de un correo electrónico a través de Amazon SES.
-> **Estado:** `SENT`
+### 1. Activación del Consumidor (Trigger)
+La función Lambda se dispara automáticamente al recibir mensajes en la cola SQS.
+> **Evidencia:** Configuración del disparador SQS en la consola Lambda.
 >
-> ![Auditoría Email](../../docs/layer-3/dynamodb-email-audit.png)
+> ![Disparador SQS](../../docs/layer-3/lambda-sqs-trigger.png)
 
-*(Nota: Corresponde a tu captura `image_b444b3.png`)*
-
-### 2. Validación de Mocking (Canal SMS)
-Evidencia de la estrategia de simulación para el canal SMS. El sistema procesó el evento pero registró el estado simulado debido a restricciones de Sandbox.
-> **Estado:** `SENT_MOCK`
+### 2. Procesamiento y Trazabilidad (Logs)
+Registro detallado en CloudWatch que confirma la recepción del lote, el procesamiento exitoso y la llamada a los servicios externos.
+> **Evidencia:** Logs de ejecución de `EmailConsumerLambda`.
 >
-> ![Auditoría SMS Mock](../../docs/layer-3/dynamodb-sms-mock.png)
+> ![Logs de CloudWatch](../../docs/layer-3/lambda-cloudwatch-logs.png)
 
-*(Nota: Corresponde a tu captura `image_2e789f.png`)*
+### 3. Entrega Final al Usuario
+Confirmación de que el mensaje llegó al destinatario final a través del proveedor (Amazon SES).
+> **Evidencia:** Correo electrónico recibido en la bandeja de entrada.
+>
+> ![Correo Recibido](../../docs/layer-3/email-received-proof.png)
+
+### 4. Auditoría y Persistencia
+El estado final de cada notificación queda inmutablemente registrado en DynamoDB para fines de auditoría y analítica.
+> **Evidencia:** Registros en la tabla `Project_Notifications_System_Audit`.
+>
+> ![Log de Auditoría DynamoDB](../../docs/layer-3/dynamodb-audit-log.png)
+
 
 ### 3. Trazabilidad y Logs (CloudWatch)
 Registro detallado de la ejecución de la Lambda, mostrando el procesamiento del evento y la captura de errores (durante la fase de depuración).

@@ -1,0 +1,28 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Allow_Owner_Full_Control",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::TU_CUENTA_ID:root"
+      },
+      "Action": "SQS:*",
+      "Resource": "arn:aws:sqs:us-east-2:TU_CUENTA_ID:Email_Queue"
+    },
+    {
+      "Sid": "Allow_EventBridge_Specific_Rule",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "events.amazonaws.com"
+      },
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:sqs:us-east-2:TU_CUENTA_ID:Email_Queue",
+      "Condition": {
+        "ArnEquals": {
+          "aws:SourceArn": "arn:aws:events:us-east-2:TU_CUENTA_ID:rule/RoutingRule-Email-v2"
+        }
+      }
+    }
+  ]
+}

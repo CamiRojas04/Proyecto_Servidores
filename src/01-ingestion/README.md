@@ -7,7 +7,7 @@ Esta capa expone la **Interfaz Pública** del Sistema de Notificaciones. Actúa 
 ### 1. Amazon API Gateway (HTTP API)
 * **Endpoint Público:** `https://[ID_API].execute-api.us-east-2.amazonaws.com`
 * **Rutas:**
-    * `GET /`: Sirve una interfaz web HTML para pruebas manuales.
+    * `GET / (Web Tester)`: Despliega una interfaz gráfica interactiva (SPA) embebida en la Lambda. Permite enviar notificaciones de prueba a cualquiera de los 3 canales directamente desde el navegador, sin necesidad de herramientas externas como Postman.
     * `POST /send`: Endpoint REST para envío programático de notificaciones.
 
 ### 2. Lambda Producer (`ProducerLambda`)
@@ -28,3 +28,7 @@ Esta capa expone la **Interfaz Pública** del Sistema de Notificaciones. Actúa 
   "msg": "Contenido del mensaje",
   "subject": "Asunto (Opcional, solo para Email)"
 }
+
+### Interfaz de Pruebas Web
+Al acceder a la URL raíz del API Gateway, se carga el cliente web ligero:
+![Cliente Web Serverless](../../docs/layer-1/web-interface.png)

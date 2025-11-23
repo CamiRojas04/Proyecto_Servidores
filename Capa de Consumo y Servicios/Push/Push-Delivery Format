@@ -1,0 +1,6 @@
+{
+  "type": "PUSH",
+  "device_token": "fcm-token-android-xyz-123",
+  "message": "Add your message",
+  "id": "push-prueba-manual-01"
+}

@@ -1,0 +1,9 @@
+# Formato para probar el envío de correos Email vía EventBridge
+
+{
+  "type": "EMAIL",
+  "recipient_email": "tucorreoverificado@ejemplo.com",
+  "subject": "Prueba de Arquitectura",
+  "message": "Este es el cuerpo del mensaje enviado vía EventBridge.",
+  "id": "email-test-001"
+}

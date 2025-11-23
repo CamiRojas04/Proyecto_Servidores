@@ -1,0 +1,21 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "PermitirPublicarEventos",
+            "Effect": "Allow",
+            "Action": "events:PutEvents",
+            "Resource": "arn:aws:events:us-east-2:*:event-bus/default"
+        },
+        {
+            "Sid": "PermitirLogsCloudWatch",
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ],
+            "Resource": "arn:aws:logs:us-east-2:*:*"
+        }
+    ]
+}

@@ -56,9 +56,3 @@ El estado final de cada notificación queda inmutablemente registrado en DynamoD
 >
 > ![Log de Auditoría DynamoDB](../../docs/layer-3/dynamodb-audit-log.png)
 
-
-### 3. Trazabilidad y Logs (CloudWatch)
-Registro detallado de la ejecución de la Lambda, mostrando el procesamiento del evento y la captura de errores (durante la fase de depuración).
-> **Detalle:** Logs de ejecución y excepciones controladas.
->
-> ![Logs CloudWatch](../../docs/layer-3/lambda-cloudwatch-logs.png)

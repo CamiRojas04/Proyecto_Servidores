@@ -1,0 +1,7 @@
+# Formato para probar el envío de mensajes SMS
+{
+  "type": "SMS",
+  "phone_number": "+573001234567",
+  "message": "Hola, esto es una prueba de arquitectura simulada.",
+  "id": "sms-mock-001"
+}

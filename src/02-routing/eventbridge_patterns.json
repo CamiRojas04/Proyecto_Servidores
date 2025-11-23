@@ -1,0 +1,38 @@
+{
+  "description": "Patrones de eventos utilizados por EventBridge para enrutar mensajes a las colas SQS correspondientes.",
+  "rules": [
+    {
+      "rule_name": "RoutingRule-Email-v2",
+      "target_queue": "Email_Queue",
+      "event_pattern": {
+        "source": ["com.proyecto.notificaciones"],
+        "detail-type": ["NotificacionRequest"],
+        "detail": {
+          "type": ["EMAIL"]
+        }
+      }
+    },
+    {
+      "rule_name": "RoutingRule-SMS",
+      "target_queue": "SMSQueue",
+      "event_pattern": {
+        "source": ["com.proyecto.notificaciones"],
+        "detail-type": ["NotificacionRequest"],
+        "detail": {
+          "type": ["SMS"]
+        }
+      }
+    },
+    {
+      "rule_name": "RoutingRule-Push",
+      "target_queue": "PushQueue",
+      "event_pattern": {
+        "source": ["com.proyecto.notificaciones"],
+        "detail-type": ["NotificacionRequest"],
+        "detail": {
+          "type": ["PUSH"]
+        }
+      }
+    }
+  ]
+}

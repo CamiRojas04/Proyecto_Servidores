@@ -1,0 +1,33 @@
+{
+  "description": "Transformación de entrada aplicada en EventBridge para entregar un JSON limpio y plano a SQS, evitando metadatos innecesarios.",
+  "transformers": [
+    {
+      "channel": "EMAIL",
+      "input_path": {
+        "recipient": "$.detail.recipient_email",
+        "subject": "$.detail.subject",
+        "message": "$.detail.message",
+        "id": "$.detail.id"
+      },
+      "input_template": "{\"recipient_email\": \"<recipient>\", \"subject\": \"<subject>\", \"message\": \"<message>\", \"id\": \"<id>\"}"
+    },
+    {
+      "channel": "SMS",
+      "input_path": {
+        "phone": "$.detail.phone_number",
+        "msg": "$.detail.message",
+        "id": "$.detail.id"
+      },
+      "input_template": "{\"phone_number\": \"<phone>\", \"message\": \"<msg>\", \"id\": \"<id>\"}"
+    },
+    {
+      "channel": "PUSH",
+      "input_path": {
+        "token": "$.detail.device_token",
+        "msg": "$.detail.message",
+        "id": "$.detail.id"
+      },
+      "input_template": "{\"device_token\": \"<token>\", \"message\": \"<msg>\", \"id\": \"<id>\"}"
+    }
+  ]
+}

@@ -1,0 +1,69 @@
+import json
+import boto3
+import os
+import time
+from botocore.exceptions import ClientError
+
+# Inicializar clientes (fuera del handler para mejor rendimiento)
+sqs = boto3.client('sqs')
+ses = boto3.client('ses')
+dynamodb = boto3.resource('dynamodb')
+
+# Variables de entorno
+TABLE_NAME = os.environ['DYNAMODB_TABLE']
+SENDER_EMAIL = os.environ['SENDER_EMAIL']
+table = dynamodb.Table(TABLE_NAME)
+
+def lambda_handler(event, context):
+    print(f"Procesando lote de {len(event['Records'])} mensajes.")
+    
+    batch_item_failures = []
+
+    for record in event['Records']:
+        message_id = record['messageId']
+        try:
+            # 1. Parsear mensaje
+            body = json.loads(record['body'])
+            print(f"Procesando ID: {message_id}")
+            
+            # Datos esperados del evento
+            recipient = body.get('recipient_email')
+            subject = body.get('subject', 'Notificación')
+            message_content = body.get('message', 'Sin contenido')
+            # Usamos el ID del mensaje SQS como ID de notificación si no viene uno
+            notification_id = body.get('id', message_id) 
+
+            if not recipient:
+                print("Falta destinatario, omitiendo.")
+                continue
+
+            # 2. Enviar Email vía SES
+            response = ses.send_email(
+                Source=SENDER_EMAIL,
+                Destination={'ToAddresses': [recipient]},
+                Message={
+                    'Subject': {'Data': subject},
+                    'Body': {'Text': {'Data': message_content}}
+                }
+            )
+            print(f"Email enviado a {recipient}. ID SES: {response['MessageId']}")
+
+            # 3. Auditoría en DynamoDB (Requisito clave)
+            audit_item = {
+                'NotificationId': notification_id,
+                'Timestamp': str(time.time()),
+                'Channel': 'EMAIL',
+                'Status': 'SENT',
+                'Recipient': recipient,
+                'SESMessageId': response['MessageId']
+            }
+            table.put_item(Item=audit_item)
+
+        except Exception as e:
+            print(f"ERROR en mensaje {message_id}: {str(e)}")
+            # Marcar mensaje para reintento (solo este, no todo el lote)
+            batch_item_failures.append({"itemIdentifier": message_id})
+
+    return {
+        "batchItemFailures": batch_item_failures
+    }

@@ -1,4 +1,4 @@
-### 5.4. Integración de Capa 1 (EventBridge)
+### Integración de Capa 1 - Email (EventBridge)
 Se configuró la regla `RoutingRule-Email-v2` para enrutar eventos con `type: EMAIL` hacia la cola SQS.
 
 * **Reto encontrado:** Los eventos fallaban silenciosamente y terminaban en la DLQ.

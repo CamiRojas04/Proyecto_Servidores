@@ -1,4 +1,4 @@
-## 1. Configuración de Gobierno y Control de Costos
+#  Bitácora Técnica: Sistema de Notificaciones Multi-Canal (Event-Driven Architecture)
 
 Antes de desplegar cualquier recurso de infraestructura, se estableció una estrategia de protección financiera para monitorear el consumo de la cuenta AWS y evitar cargos inesperados fuera de la Capa Gratuita o del presupuesto asignado.
 

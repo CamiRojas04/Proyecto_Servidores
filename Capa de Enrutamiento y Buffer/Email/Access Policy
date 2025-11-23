@@ -1,0 +1,29 @@
+# Política implementada en Email_Queue
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "Allow_Owner",
+      "Effect": "Allow",
+      "Principal": {
+        "AWS": "arn:aws:iam::265005499975:root"
+      },
+      "Action": "SQS:*",
+      "Resource": "arn:aws:sqs:us-east-2:265005499975:Email_Queue"
+    },
+    {
+      "Sid": "Allow_EventBridge",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "events.amazonaws.com"
+      },
+      "Action": "sqs:SendMessage",
+      "Resource": "arn:aws:sqs:us-east-2:265005499975:Email_Queue",
+      "Condition": {
+        "ArnEquals": {
+          "aws:SourceArn": "arn:aws:events:us-east-2:265005499975:rule/RoutingRule-Email-v2"
+        }
+      }
+    }
+  ]
+}

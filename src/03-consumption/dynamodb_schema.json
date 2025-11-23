@@ -1,0 +1,16 @@
+{
+  "TableName": "Project_Notifications_System_Audit",
+  "KeySchema": [
+    { "AttributeName": "NotificationsID", "KeyType": "HASH" },  // Partition Key
+    { "AttributeName": "Timestamp", "KeyType": "RANGE" }        // Sort Key
+  ],
+  "AttributeDefinitions": [
+    { "AttributeName": "NotificationsID", "AttributeType": "S" },
+    { "AttributeName": "Timestamp", "AttributeType": "S" }
+  ],
+  "BillingMode": "PAY_PER_REQUEST",
+  "StreamSpecification": {
+    "StreamEnabled": true,
+    "StreamViewType": "NEW_IMAGE" // Requisito para analítica en tiempo real
+  }
+}

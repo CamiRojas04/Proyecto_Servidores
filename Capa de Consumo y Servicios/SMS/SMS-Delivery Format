@@ -1,4 +1,4 @@
-# Formato para probar el envío de mensajes SMS
+# Formato para probar el envío de mensajes SMS vía EventBridge
 {
   "type": "SMS",
   "phone_number": "+573001234567",

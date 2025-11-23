@@ -5,7 +5,7 @@ Esta capa expone la **Interfaz Pública** del Sistema de Notificaciones. Actúa 
 ## Componentes
 
 ### 1. Amazon API Gateway (HTTP API)
-* **Endpoint Público:** `https://[ID_API].execute-api.us-east-2.amazonaws.com`
+* **Endpoint Público:** `https://iu37j94jc5.execute-api.us-east-2.amazonaws.com/`
 * **Rutas:**
     * `GET / (Web Tester)`: Despliega una interfaz gráfica interactiva (SPA) embebida en la Lambda. Permite enviar notificaciones de prueba a cualquiera de los 3 canales directamente desde el navegador, sin necesidad de herramientas externas como Postman.
     * `POST /send`: Endpoint REST para envío programático de notificaciones.

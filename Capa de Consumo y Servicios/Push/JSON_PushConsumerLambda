@@ -1,0 +1,53 @@
+# Código fuente implementado en la función Lambda PushConsumerLambda
+
+import json
+import boto3
+import os
+import time
+
+sqs = boto3.client('sqs')
+dynamodb = boto3.resource('dynamodb')
+# sns = boto3.client('sns') # Para Push real usaríamos sns.publish con TargetArn
+
+TABLE_NAME = os.environ['DYNAMODB_TABLE']
+table = dynamodb.Table(TABLE_NAME)
+
+def lambda_handler(event, context):
+    print(f"Procesando {len(event['Records'])} Notificaciones Push.")
+    batch_item_failures = []
+
+    for record in event['Records']:
+        message_id = record['messageId']
+        try:
+            body = json.loads(record['body'])
+            
+            # Datos esperados para Push (Token de dispositivo o User ID)
+            device_token = body.get('device_token') 
+            message_content = body.get('message', 'Nueva notificación')
+            notification_id = body.get('id', message_id)
+
+            if not device_token:
+                print("Falta token de dispositivo.")
+                continue
+
+            # --- SIMULACIÓN DE ENVÍO PUSH ---
+            print(f" Enviando PUSH al dispositivo {device_token[:10]}...: '{message_content}'")
+            fake_push_id = f"mock-push-{int(time.time())}"
+            # --------------------------------
+
+            # Auditoría
+            audit_item = {
+                'NotificationsID': notification_id,
+                'Timestamp': str(time.time()),
+                'Channel': 'PUSH',
+                'Status': 'SENT_MOCK_PUSH', 
+                'Recipient': device_token,
+                'SESMessageId': fake_push_id
+            }
+            table.put_item(Item=audit_item)
+
+        except Exception as e:
+            print(f"Error en Push {message_id}: {str(e)}")
+            batch_item_failures.append({"itemIdentifier": message_id})
+
+    return {"batchItemFailures": batch_item_failures}

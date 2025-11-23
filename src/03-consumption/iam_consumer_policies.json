@@ -1,0 +1,21 @@
+{
+  "description": "Políticas IAM aplicadas a los roles de las Lambdas consumidoras. Se restringe el acceso a recursos específicos (Cola propia y Tabla de Auditoría compartida).",
+  "policies": [
+    {
+      "role": "EmailConsumerRole",
+      "permissions": [
+        { "Action": ["sqs:ReceiveMessage", "sqs:DeleteMessage"], "Resource": "arn:aws:sqs:*:Email_Queue" },
+        { "Action": ["ses:SendEmail"], "Resource": "*" },
+        { "Action": ["dynamodb:PutItem"], "Resource": "arn:aws:dynamodb:*:table/Project_Notifications_System_Audit" }
+      ]
+    },
+    {
+      "role": "SMSConsumerRole",
+      "permissions": [
+        { "Action": ["sqs:ReceiveMessage", "sqs:DeleteMessage"], "Resource": "arn:aws:sqs:*:SMSQueue" },
+        { "Action": ["dynamodb:PutItem"], "Resource": "arn:aws:dynamodb:*:table/Project_Notifications_System_Audit" }
+        // Nota: Permiso sns:Publish omitido por estrategia de Mocking
+      ]
+    }
+  ]
+}

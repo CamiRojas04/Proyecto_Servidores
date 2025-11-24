@@ -149,7 +149,7 @@ Se desarrollaron las funciones `SMSConsumerLambda` y `PushConsumerLambda` con la
 
 ---
 
-## ✅ Conclusiones del Proyecto
+## Conclusiones 
 
 Se ha entregado una arquitectura **Serverless** robusta y desacoplada que cumple con todos los requisitos funcionales y no funcionales:
 

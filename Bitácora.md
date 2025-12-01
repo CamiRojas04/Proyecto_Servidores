@@ -50,11 +50,13 @@ Se implementó la capa de entrada pública para exponer el sistema como un micro
     * **Lógica:** Implementa un patrón dual (API Backend + Web Frontend).
 
 ### 2.2. Interfaz Gráfica Embebida (Serverless Frontend)
-Se desarrolló una **Single Page Application (SPA)** ligera servida directamente desde la Lambda mediante el método `GET`. Esto elimina la necesidad de hosting adicional (S3/CloudFront) para pruebas simples.
+Se desarrolló una **Single Page Application (SPA)** ligera servida directamente desde la Lambda mediante el método `GET`. Esto elimina la necesidad de hosting adicional (S3/CloudFront) para pruebas simples. Se adicionó una verificación automática desde la interfaz para facilitar este tipo de procesos, tanto de verificación de correo como de número de celular, y así tener un una interfaz mucho más interactiva y funcional.
 
 > **Evidencia Final:** Interfaz web del proyecto funcionando y lista para enviar notificaciones a los 3 canales.
 >
-> ![Interfaz Web Final](./docs/layer-1/web-interface.png)
+<img width="1296" height="610" alt="image" src="https://github.com/user-attachments/assets/cbf71cac-9db5-4377-8f59-07dde20ce35c" />
+<img width="1307" height="603" alt="image" src="https://github.com/user-attachments/assets/4b56e3b1-0dc1-4ae8-b50a-b2e9f3733f13" />
+
 
 ### 2.3. Prueba de Sistema (End-to-End)
 Se realizaron pruebas de envío desde la interfaz web y mediante comandos `cURL` en CloudShell, validando que el payload JSON se inyecta correctamente en EventBridge.

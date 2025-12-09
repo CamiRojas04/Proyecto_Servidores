@@ -523,6 +523,38 @@ Se desarrollaron las funciones `SMSConsumerLambda` y `PushConsumerLambda` con la
 >
 > ![Auditoría SMS Mock](./docs/layer-3/dynamodb-audit-log.png)
 
+6. Resolución de Desafíos Específicos (Capa de Lógica)
+
+Cumpliendo con los requerimientos avanzados del Proyecto 4, se implementaron mecanismos de protección y control de flujo directamente en la capa de ingestión (ProducerLambda), evitando el uso de servicios adicionales costosos.
+
+6.1. Deduplicación de Eventos (Idempotencia)
+
+Para garantizar que un mismo mensaje no sea procesado múltiples veces (ej: reintentos de red del cliente), se implementó un control atómico en DynamoDB.
+
+Estrategia: Tabla Sys_Idempotency con request_id como llave primaria.
+
+<img width="650" height="231" alt="image" src="https://github.com/user-attachments/assets/99f5a987-099a-4443-8239-9d3eb4fa7e42" />
+
+
+Mecanismo: Antes de procesar, se intenta escribir el ID con ConditionExpression='attribute_not_exists(request_id)'. Si la escritura falla, se retorna 409 Conflict, deteniendo el duplicado en la entrada.
+
+6.2. Rate Limiting por Usuario (Protección)
+
+Se desarrolló un algoritmo de "Token Bucket" simplificado utilizando contadores atómicos en DynamoDB (Sys_RateLimit) para cumplir con el requisito de limitar envíos por hora.
+
+<img width="658" height="235" alt="image" src="https://github.com/user-attachments/assets/dca356a4-15b4-4c38-8c7f-5eb20bd412df" />
+
+
+Lógica: Se incrementa un contador RequestCount particionado por UserId y TimeWindow (Hora actual). Si el contador supera el límite del plan (ej: 20 peticiones/hora), se rechaza la solicitud con 429 Too Many Requests.
+
+6.3. Notificaciones Diferidas (Scheduler)
+
+Se integró Amazon EventBridge Scheduler para permitir el agendamiento de mensajes a futuro, un requisito clave para campañas de marketing o recordatorios.
+
+Implementación: Si el payload incluye send_at, el sistema omite el EventBus inmediato y crea un Schedule de "una sola ejecución" (ActionAfterCompletion='DELETE').
+
+Destino: El Scheduler inyecta el mensaje directamente en la cola SQS correspondiente (ej: Email_Queue) en la fecha y hora programada, respetando la arquitectura asíncrona.
+
 ---
 
 ## Conclusiones 
